@@ -1,48 +1,58 @@
-"use client"
+"use client";
 
-import { useState, useRef } from "react"
-import Link from "next/link"
-import { Home, Library, ListMusic, Search, Settings, Heart, ChevronRight, ChevronLeft } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useState, useRef } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  Home,
+  Library,
+  ListMusic,
+  Search,
+  Settings,
+  Heart,
+  ChevronRight,
+  ChevronLeft,
+  Newspaper,
+  CreditCard,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SidebarProps {
-  isCollapsed: boolean
-  toggleCollapsed: () => void
+  isCollapsed: boolean;
+  toggleCollapsed: () => void;
 }
 
 export default function Sidebar({ isCollapsed, toggleCollapsed }: SidebarProps) {
-  const [width, setWidth] = useState(256)
-  const isDragging = useRef(false)
+  const [width, setWidth] = useState(256);
+  const isDragging = useRef(false);
+  const pathname = usePathname();
 
   const startResizing = () => {
-    isDragging.current = true
-    document.addEventListener("mousemove", handleResize)
-    document.addEventListener("mouseup", stopResizing)
-  }
+    isDragging.current = true;
+    document.addEventListener("mousemove", handleResize);
+    document.addEventListener("mouseup", stopResizing);
+  };
 
   const handleResize = (e: MouseEvent) => {
     if (isDragging.current) {
-      const newWidth = Math.min(Math.max(e.clientX, 64), 400)
-      setWidth(newWidth)
+      const newWidth = Math.min(Math.max(e.clientX, 64), 400);
+      setWidth(newWidth);
     }
-  }
+  };
 
   const stopResizing = () => {
-    isDragging.current = false
-    document.removeEventListener("mousemove", handleResize)
-    document.removeEventListener("mouseup", stopResizing)
-  }
+    isDragging.current = false;
+    document.removeEventListener("mousemove", handleResize);
+    document.removeEventListener("mouseup", stopResizing);
+  };
 
   const navItems = [
-    { icon: Home, label: "Home", href: "/", active: false },
-    { icon: Library, label: "Library", href: "/library", active: true },
-    { icon: ListMusic, label: "Playlists", href: "/playlists", active: false },
-    { icon: Search, label: "Search", href: "/search", active: false },
-    { icon: Heart, label: "Favorites", href: "/favorites", active: false },
-    { icon: Settings, label: "Settings", href: "/settings", active: false },
-    { icon: "text", label: "Blogs", href: "/blogs", active: false },
-    { icon: "text", label: "Subscription", href: "/subscription", active: false },
-  ]
+    { icon: Library, label: "Library", href: "/library" },
+    { icon: ListMusic, label: "Playlists", href: "/playlists" },
+    { icon: Heart, label: "Favorites", href: "/favorites" },
+    { icon: Newspaper, label: "Blogs", href: "/blogs" },
+    { icon: CreditCard, label: "Subscription", href: "/subscription" },
+  ];
 
   return (
     <>
@@ -68,49 +78,42 @@ export default function Sidebar({ isCollapsed, toggleCollapsed }: SidebarProps) 
           {/* Navigation */}
           <nav className="flex-1 overflow-y-auto">
             <ul className="space-y-1 px-2">
-              {navItems.map((item, index) => (
-                <li key={index}>
-                  <Link href={item.href}>
-                    <span
-                      className={cn(
-                        "group flex items-center px-4 py-3 rounded-lg transition-all duration-200 relative",
-                        item.active
-                          ? "bg-gray-200 text-black font-medium"
-                          : "text-gray-700 hover:bg-gray-100",
-                      )}
-                    >
-                      {item.icon === "text" ? (
+              {navItems.map((item, index) => {
+                const isActive = pathname === item.href;
+
+                return (
+                  <li key={index}>
+                    <Link href={item.href}>
+                      <span
+                        className={cn(
+                          "group flex items-center px-4 py-3 rounded-lg transition-all duration-200 relative",
+                          isActive
+                            ? "bg-gray-200 text-black font-medium"
+                            : "text-gray-700 hover:bg-gray-100"
+                        )}
+                      >
+                        <item.icon
+                          className={cn(
+                            "h-5 w-5",
+                            isActive ? "text-black" : "text-gray-600"
+                          )}
+                        />
                         <span
                           className={cn(
-                            "text-sm font-medium",
-                            isCollapsed && "hidden md:block opacity-0",
+                            "ml-4 font-medium transition-opacity duration-300 relative",
+                            isCollapsed
+                              ? "opacity-0 hidden md:block md:opacity-0"
+                              : "opacity-100"
                           )}
                         >
                           {item.label}
+                          <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full" />
                         </span>
-                      ) : (
-                        <>
-                          <item.icon
-                            className={cn(
-                              "h-5 w-5",
-                              item.active ? "text-black" : "text-gray-600",
-                            )}
-                          />
-                          <span
-                            className={cn(
-                              "ml-4 font-medium transition-opacity duration-300 relative",
-                              isCollapsed ? "opacity-0 hidden md:block md:opacity-0" : "opacity-100",
-                            )}
-                          >
-                            {item.label}
-                            <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full" />
-                          </span>
-                        </>
-                      )}
-                    </span>
-                  </Link>
-                </li>
-              ))}
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
 
@@ -131,5 +134,5 @@ export default function Sidebar({ isCollapsed, toggleCollapsed }: SidebarProps) 
         )}
       </div>
     </>
-  )
+  );
 }
