@@ -134,9 +134,9 @@ export default function Player() {
   const { title, artist, art } = playlist[currentTrackIndex];
 
   return (
-    <div className="sticky bottom-0 left-0 right-0 bg-white border-t shadow-lg z-50">
+    <div className="sticky bottom-0 left-0 right-0 bg-white border-t shadow-lg z-50 text-black">
       <audio ref={audioRef} />
-
+  
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-3">
           {/* Left: Song Info */}
@@ -145,37 +145,37 @@ export default function Player() {
               <Image src={art} alt="Now playing" width={48} height={48} className="object-cover rounded" />
             </div>
             <div className="min-w-0">
-              <h4 className="font-medium text-sm truncate">{title}</h4>
-              <p className="text-xs text-gray-500 truncate">{artist}</p>
+              <h4 className="font-medium text-sm truncate text-black">{title}</h4>
+              <p className="text-xs text-gray-600 truncate">{artist}</p>
             </div>
             <Button variant="ghost" size="icon" className="hidden sm:flex h-8 w-8">
-              <Heart className="h-4 w-4" />
+              <Heart className="h-4 w-4 text-gray-700" />
             </Button>
           </div>
-
+  
           {/* Center: Player Controls */}
           <div className="flex flex-col items-center w-2/4">
             <div className="flex items-center space-x-2 mb-1">
               <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Shuffle className="h-4 w-4" />
+                <Shuffle className="h-4 w-4 text-gray-700" />
               </Button>
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={prevTrack}>
-                <SkipBack className="h-4 w-4" />
+                <SkipBack className="h-4 w-4 text-gray-700" />
               </Button>
               <Button size="icon" className="h-10 w-10 rounded-full bg-black text-white hover:bg-gray-800" onClick={togglePlay}>
                 {isPlaying ? <Pause className="h-5 w-5 fill-white" /> : <Play className="h-5 w-5 fill-white" />}
               </Button>
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={nextTrack}>
-                <SkipForward className="h-4 w-4" />
+                <SkipForward className="h-4 w-4 text-gray-700" />
               </Button>
               <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Repeat className="h-4 w-4" />
+                <Repeat className="h-4 w-4 text-gray-700" />
               </Button>
             </div>
-
+  
             {/* Progress Bar */}
             <div className="flex items-center w-full max-w-md space-x-2">
-              <span className="text-xs text-gray-500">{formatTime(currentTime)}</span>
+              <span className="text-xs text-gray-600">{formatTime(currentTime)}</span>
               <Slider
                 max={100}
                 step={1}
@@ -183,14 +183,18 @@ export default function Player() {
                 value={duration > 0 ? [(currentTime / duration) * 100] : [0]}
                 onValueChange={handleSliderChange}
               />
-              <span className="text-xs text-gray-500">{formatTime(duration)}</span>
+              <span className="text-xs text-gray-600">{formatTime(duration)}</span>
             </div>
           </div>
-
+  
           {/* Volume Control */}
           <div className="flex items-center justify-end space-x-3 w-1/4">
             <div className="hidden md:flex items-center space-x-2">
-              {volume === 0 ? <VolumeX className="h-4 w-4 text-gray-500" /> : <Volume2 className="h-4 w-4 text-gray-500" />}
+              {volume === 0 ? (
+                <VolumeX className="h-4 w-4 text-gray-700" />
+              ) : (
+                <Volume2 className="h-4 w-4 text-gray-700" />
+              )}
               <Slider
                 defaultValue={[volume]}
                 max={100}
@@ -205,9 +209,9 @@ export default function Player() {
       </div>
     </div>
   );
+  
 }
 
-// Helper function to format time
 const formatTime = (time: number) => {
   if (isNaN(time)) return "0:00";
   const minutes = Math.floor(time / 60);
